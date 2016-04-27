@@ -8,7 +8,16 @@
                 <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
-                    You are logged in!
+                    @foreach($tasks as $task)
+                        <div>
+                            <div>
+                                {{ $task->title }}
+                            </div>
+                            <div>
+                                {{ $task->text }}
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

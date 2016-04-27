@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,6 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('home')
+            ->with('task', Task::getTaskById(1));
     }
 }
