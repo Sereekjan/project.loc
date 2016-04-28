@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Group;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,12 @@ class HomeController extends Controller
     public function index()
     {
         return view('home')
-            ->with('task', Task::getTaskById(1));
+            ->with('tasks', Task::getTasksByUserId(1))
+            /*->with('groups', Group::getGroupsByUserId())*/;
     }
+    
+    /*public function home() {
+        return view('home')
+            ->with('task', Task::getTasks());
+    }*/
 }

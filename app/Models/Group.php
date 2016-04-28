@@ -9,4 +9,8 @@ class Group extends Model
     protected $fillable = [
         'group_id', 'user_id', 'privilege_id'
     ];
+
+    public static function getGroups() {
+        self::all();
+    }
 }

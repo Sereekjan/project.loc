@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Task extends Model
 {
@@ -10,8 +11,9 @@ class Task extends Model
         'title', 'text', 'time', 'priority_id'
     ];
 
-    public static function getTasks() {
+    public static function getTasksByUserId($user_id) { // ТУТА
         return self::all();
+        //return self::select('tasks.*')->join('tasks_users_relations', '	tasks_users_relations.user_id', '=', 'tasks.id');
     }
 
     public static function getTaskById($id) {

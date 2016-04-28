@@ -47,12 +47,13 @@
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">CALENDAR</a></li>
-                    <li><a href="{{ url('/home') }}">TO-DO LISTS</a></li>
-                    <li><a href="{{ url('/home') }}">GROUPS</a></li>
-                </ul>
-
+                @if (!Auth::guest())
+                    <ul class="nav navbar-nav">
+                        <li><a href="{{ url('/home') }}">CALENDAR</a></li>
+                        <li><a href="{{ url('/home') }}">TO-DO LISTS</a></li>
+                        <li><a href="{{ url('/home') }}">GROUPS</a></li>
+                    </ul>
+                @endif
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
@@ -77,40 +78,17 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
-                <ul class="nav nav-pills nav-stacked">
-                    <li class="sidebar-brand">
-                        <a href="#">
-                            Start Bootstrap
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="#">Shortcuts</a>
-                    </li>
-                    <li>
-                        <a href="#">Overview</a>
-                    </li>
-                    <li>
-                        <a href="#">Events</a>
-                    </li>
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
+            @if (!Auth::guest())
+                @yield('left-sidebar')
 
-            <div class="col-md-9">
-                @yield('content')
-            </div>
+                <div class="col-md-9">
+                    @yield('content')
+                </div>
+            @else
+                <div class="col-md-12">
+                    @yield('welcome')
+                </div>
+            @endif
         </div>
     </div>
 
