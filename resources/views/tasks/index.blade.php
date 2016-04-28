@@ -33,7 +33,7 @@
 
 @section('content')
     <div class="panel panel-body list-head">
-        <h3>TASK LIST</h3>
+        <h3>List</h3>
         @foreach($tasks as $task)
             <pre class="list-row"><h4><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $task->title }}</h4><span class="glyphicon glyphicon-trash pull-right btn-sm"></span><span class="glyphicon glyphicon-edit pull-right btn-sm"></span></pre>
         @endforeach

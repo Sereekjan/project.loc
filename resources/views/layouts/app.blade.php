@@ -51,7 +51,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/home') }}">CALENDAR</a></li>
                         <li><a href="{{ url('/home') }}">TO-DO LISTS</a></li>
-                        <li><a href="{{ url('/home') }}">GROUPS</a></li>
+                        <li><a href="{{ url('/groups') }}">GROUPS</a></li>
                     </ul>
                 @endif
                 <!-- Right Side Of Navbar -->
@@ -86,7 +86,7 @@
                 </div>
             @else
                 <div class="col-md-12">
-                    @yield('welcome')
+                    @yield('content')
                 </div>
             @endif
         </div>

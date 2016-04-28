@@ -19,4 +19,9 @@ class Task extends Model
     public static function getTaskById($id) {
         return self::where('id', '=', $id)->firstOrFail();
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User', 'tasks_users_relations');
+    }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
@@ -15,7 +17,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        return view('groups.index')
+            ->with('groups', Group::getGroups());
     }
 
     /**
@@ -25,7 +28,7 @@ class GroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('groups.create');
     }
 
     /**
@@ -34,9 +37,22 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Group $group)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:20'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect(route('groups.create'))
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $group->name = $request->input('name');
+        $group->save();
+
+        return redirect(route('groups.index'));
     }
 
     /**

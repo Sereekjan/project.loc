@@ -33,13 +33,13 @@
 
 @section('content')
     <div class="panel panel-body list-head">
-        <h3>TASK LIST</h3>
-        @foreach($tasks as $task)
-            <pre class="list-row"><h4><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $task->title }}</h4><span class="glyphicon glyphicon-trash pull-right btn-sm"></span><span class="glyphicon glyphicon-edit pull-right btn-sm"></span></pre>
+        <h3>GROUP LIST</h3>
+        @foreach($groups as $group)
+            <pre class="list-row"><h4><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $group->name }}</h4><span class="glyphicon glyphicon-trash pull-right btn-sm"></span><span class="glyphicon glyphicon-edit pull-right btn-sm"></span></pre>
         @endforeach
         <div class="nav nav-tabs span2 clearfix"></div>
         <div class="panel-body">
-            <a class="btn btn-success btn-lg" href=" {{ route('tasks.create') }} ">Add task</a>
+            <a class="btn btn-success btn-lg" href=" {{ route('groups.create') }} ">Add group</a>
             <a class="btn btn-danger btn-lg pull-right" href="#">Remove</a>
         </div>
     </div>

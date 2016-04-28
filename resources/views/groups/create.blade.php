@@ -32,15 +32,27 @@
 @endsection
 
 @section('content')
-    <div class="panel panel-body list-head">
-        <h3>TASK LIST</h3>
-        @foreach($tasks as $task)
-            <pre class="list-row"><h4><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $task->title }}</h4><span class="glyphicon glyphicon-trash pull-right btn-sm"></span><span class="glyphicon glyphicon-edit pull-right btn-sm"></span></pre>
-        @endforeach
-        <div class="nav nav-tabs span2 clearfix"></div>
-        <div class="panel-body">
-            <a class="btn btn-success btn-lg" href=" {{ route('tasks.create') }} ">Add task</a>
-            <a class="btn btn-danger btn-lg pull-right" href="#">Remove</a>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Add group</div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <form action="{{route('groups.store')}}" method="post">
+                            {{csrf_field()}}
+                            <div class="form-group">
+                                <label>Group name</label>
+                                <input type="text" class="form-control" name="name" class="form-control" value="{{old('title')}}">
+                                <div>{{ $errors->first('name')}}</div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" name="submit">Add group</button>
+                                <a class="btn btn-danger pull-right" href="/groups">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

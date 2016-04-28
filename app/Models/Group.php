@@ -11,6 +11,6 @@ class Group extends Model
     ];
 
     public static function getGroups() {
-        self::all();
+        return self::all();
     }
 }
