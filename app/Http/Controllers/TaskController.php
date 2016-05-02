@@ -19,7 +19,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-
+        return view('tasks.index')
+            ->with('tasks', Task::getTasksByUserId(Auth::user()->id));
     }
 
     /**
@@ -85,7 +86,9 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('tasks.edit')
+            ->with('priorities', Priority::getPriorities())
+            ->with('task', Task::find($id));
     }
 
     /**
@@ -97,7 +100,27 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:20',
+            'text' => 'required|max:500',
+            'status' => 'required',
+            'time' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect(route('tasks.create'))
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $task = Task::find($id);
+        $task->title = $request->input('title');
+        $task->text = $request->input('text');
+        $task->priority_id = $request->input('status');
+        $task->time = $request->input('time');
+        $task->save();
+
+        return redirect(route('tasks.index'));
     }
 
     /**
@@ -109,5 +132,21 @@ class TaskController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete($id, Request $request) {
+        if (isset($request['submit'])) {
+            if (is_array($request['deleting'])) {
+                foreach ($request['deleting'] as $_id) {
+                    $task = Task::find($_id);
+                    $task->delete();
+                }
+            } else {
+                $task = Task::find($request['deleting']);
+                $task->delete();
+            }
+        }
+
+        return redirect(route('tasks.index'));
     }
 }

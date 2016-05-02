@@ -13,4 +13,12 @@ class Group extends Model
     public static function getGroups() {
         return self::all();
     }
+
+    public static function getGroupById($id) {
+        return self::where('id', '=', $id)->get();
+    }
+
+    public function members() {
+        return $this->belongsToMany('App\User', 'group_members');
+    }
 }

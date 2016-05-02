@@ -35,12 +35,15 @@
     <div class="panel panel-body list-head">
         <h3>GROUP LIST</h3>
         @foreach($groups as $group)
-            <pre class="list-row"><h4><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $group->name }}</h4><span class="glyphicon glyphicon-trash pull-right btn-sm"></span><span class="glyphicon glyphicon-edit pull-right btn-sm"></span></pre>
+            <pre class="list-row"><form method="post" action="/groups/1"><h4><input type="checkbox" name="deleting[]" value="{{$group->id}}" form="delete">&nbsp;&nbsp;&nbsp;{{ $group->name }}</h4>{{csrf_field()}}<button class="btn glyphicon glyphicon-trash pull-right btn-sm" name="submit"></button><input type="hidden" name="deleting" value="{{$group->id}}"><a class="btn glyphicon glyphicon-edit pull-right btn-sm" href="{{ route('groups.edit', $group->id) }}"></a></form></pre>
         @endforeach
         <div class="nav nav-tabs span2 clearfix"></div>
         <div class="panel-body">
             <a class="btn btn-success btn-lg" href=" {{ route('groups.create') }} ">Add group</a>
-            <a class="btn btn-danger btn-lg pull-right" href="#">Remove</a>
+            <button class="btn btn-danger btn-lg pull-right" name="submit" form="delete">Remove</button>
         </div>
     </div>
+    <form action="/groups/1" method="post" id="delete">
+        {{csrf_field()}}
+    </form>
 @endsection

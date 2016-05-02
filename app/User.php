@@ -28,4 +28,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Task', 'tasks_users_relations');
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany('App\Models\Group', 'group_members');
+    }
 }

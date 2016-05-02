@@ -20,6 +20,8 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware' => 'auth'], function() {
+    Route::post('/groups/{groups}', 'GroupController@delete');
+    Route::post('/tasks/{tasks}', 'TaskController@delete');
     Route::resource('tasks', 'TaskController');
     Route::resource('groups', 'GroupController');
 });

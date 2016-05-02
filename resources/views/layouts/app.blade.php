@@ -50,7 +50,7 @@
                 @if (!Auth::guest())
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/home') }}">CALENDAR</a></li>
-                        <li><a href="{{ url('/home') }}">TO-DO LISTS</a></li>
+                        <li><a href="{{ url('/tasks') }}">TO-DO LISTS</a></li>
                         <li><a href="{{ url('/groups') }}">GROUPS</a></li>
                     </ul>
                 @endif
