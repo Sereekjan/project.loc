@@ -49,9 +49,9 @@
                 <!-- Left Side Of Navbar -->
                 @if (!Auth::guest())
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ url('/home') }}">CALENDAR</a></li>
-                        <li><a href="{{ url('/tasks') }}">TO-DO LISTS</a></li>
-                        <li><a href="{{ url('/groups') }}">GROUPS</a></li>
+                        <li><a href="{{ url('/calendar') }}">CALENDAR</a></li>
+                        <li><a href="{{ url('/tasks') }}">MY TASKS</a></li>
+                        <li><a href="{{ url('/groups') }}">MY GROUPS</a></li>
                     </ul>
                 @endif
                 <!-- Right Side Of Navbar -->
@@ -79,7 +79,48 @@
     <div class="container">
         <div class="row">
             @if (!Auth::guest())
-                @yield('left-sidebar')
+                    <div class="col-md-3 panel panel-body sidebar">
+                        <ul class="nav nav-pills nav-stacked left-sidebar">
+                            <li class="header text">
+                                <h3>This week</h3>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getMonday()) }}">Monday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getMonday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getTuesday()) }}">Tuesday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getTuesday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getWednesday()) }}">Wednesday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getWednesday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getThirsday()) }}">Thirsday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getThirsday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getFriday()) }}">Friday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getFriday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getSaturday()) }}">Saturday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getSaturday())}}
+                </span></a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/calendar/'.\App\Http\Helper::getSunday()) }}">Sunday<span class="badge right-circle">
+                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getSunday())}}
+                </span></a>
+                            </li>
+                        </ul>
+                    </div>
 
                 <div class="col-md-9">
                     @yield('content')
@@ -92,9 +133,18 @@
         </div>
     </div>
 
+    <!--nav class="navbar navbar-inverse navbar-static-bottom">
+        <div class="container">
+            <div class="navbar-header">
+                Copyright 2016 &copy;
+            </div>
+        </div>
+    </nav-->
+
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 </body>
 </html>

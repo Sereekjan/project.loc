@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Priority;
 use App\Models\Task;
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -31,7 +33,8 @@ class TaskController extends Controller
     public function create()
     {
         return view('tasks.create')
-            ->with('priorities', Priority::getPriorities());
+            ->with('priorities', Priority::getPriorities())
+            ->with('user', Auth::user());
     }
 
     /**
@@ -42,11 +45,15 @@ class TaskController extends Controller
      */
     public function store(Request $request, Task $task)
     {
+        //dd($request->input());
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:20',
             'text' => 'required|max:500',
             'status' => 'required',
-            'time' => 'required'
+            'time' => 'required',
+            'for' => 'required|digits_between:1,3',
+            'name' => 'required|'.(($request->input('for') == '2') ? 'exists:users,email' :
+                    (($request->input('for') == '3') ? 'exists:groups,name' : ''))
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +69,13 @@ class TaskController extends Controller
         $task->save();
 
         $user = Auth::user();
-        $user = $task->users()->attach(88, ['creator_id' => $user->id]);
+        if ($request->input('for') == '1') {
+            $user = $task->user()->attach($user->id, ['creator_id' => $user->id]);
+        } elseif ($request->input('for') == '2') {
+            $user = $task->user()->attach(User::getUserByEmail($request->input('name'))->id, ['creator_id' => $user->id]);
+        } elseif ($request->input('for') == '3') {
+            $user = $task->group()->attach(Group::getGroupByName($request->input('name'))->id, ['creator_id' => $user->id]);
+        }
 
         return redirect(route('tasks.index'));
     }
@@ -75,7 +88,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('tasks.show')
+            ->with('priorities', Priority::getPriorities())
+            ->with('task', Task::getTaskById($id));
     }
 
     /**
@@ -135,6 +150,16 @@ class TaskController extends Controller
     }
 
     public function delete($id, Request $request) {
+        $validator = Validator::make($request->all(), [
+            'deleting' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect($_SERVER['HTTP_REFERER'])
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         if (isset($request['submit'])) {
             if (is_array($request['deleting'])) {
                 foreach ($request['deleting'] as $_id) {
@@ -147,6 +172,6 @@ class TaskController extends Controller
             }
         }
 
-        return redirect(route('tasks.index'));
+        return redirect($_SERVER['HTTP_REFERER']);
     }
 }

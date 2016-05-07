@@ -49,18 +49,18 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Add group</div>
+                <div class="panel-heading">Add member</div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <form action="{{route('groups.store')}}" method="post">
+                        <form action="{{route('groups.memberAdd', $group_id)}}" method="post">
                             {{csrf_field()}}
                             <div class="form-group">
-                                <label>Group name</label>
-                                <input type="text" class="form-control" name="name" class="form-control" value="{{old('name')}}">
-                                <div>{{ $errors->first('name')}}</div>
+                                <label>User's email</label>
+                                <input type="text" class="form-control" name="email" class="form-control" value="{{old('email')}}">
+                                <div>{{ $errors->first('email')}}</div>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-success" name="submit">Add group</button>
+                                <button class="btn btn-success" name="submit">Add member</button>
                                 <a class="btn btn-danger pull-right" href="/groups">Cancel</a>
                             </div>
                         </form>

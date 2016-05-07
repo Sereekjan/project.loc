@@ -46,27 +46,30 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Add group</div>
-                <div class="panel-body">
-                    <div class="col-md-12">
-                        <form action="{{route('groups.store')}}" method="post">
-                            {{csrf_field()}}
-                            <div class="form-group">
-                                <label>Group name</label>
-                                <input type="text" class="form-control" name="name" class="form-control" value="{{old('name')}}">
-                                <div>{{ $errors->first('name')}}</div>
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-success" name="submit">Add group</button>
-                                <a class="btn btn-danger pull-right" href="/groups">Cancel</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <div class="panel panel-body list-head">
+        <h3>Calendar</h3>
+        <div class="panel-body">
+            <h3 class="text-center">{{$month}}</h3>
+            <table class="table" width="100%" cellpadding="5">
+                <tr>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thirsday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                </tr>
+                <tr>
+                @for($i = 0; $i < count($days); $i++)
+                    @if($i%7 == 0 && $i != 0)
+                </tr>
+                <tr>
+                    @endif
+                    <td><a href="calendar/{{$days[$i][1]}}">{{$days[$i][0]}}</a></td>
+                @endfor
+                </tr>
+            </table>
         </div>
     </div>
 @endsection

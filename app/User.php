@@ -33,4 +33,17 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Group', 'group_members');
     }
+
+    public function invites()
+    {
+        return $this->hasMany('App\Models\Invite', 'inviter_id');
+    }
+    
+    public function getGroups() {
+        return $this->groups()->paginate(10);
+    }
+
+    public static function getUserByEmail($email) {
+        return self::where('email', '=', $email)->first();
+    }
 }

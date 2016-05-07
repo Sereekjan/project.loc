@@ -17,7 +17,16 @@ Route::get('/', function () {
 
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/calendar', 'MainController@calendar');
+
+Route::get('/calendar/{days}', 'MainController@day');
+
+Route::post('/groups/{members}/delete', [ 'as' => 'groups.membersDelete', 'uses' => 'GroupController@deleteMembers'], function($id) {
+
+});
+
+Route::get('/groups/{members}/addForm', [ 'as' => 'groups.memberAddForm', 'uses' => 'GroupController@memberAddForm']);
+Route::post('/groups/{members}/add', [ 'as' => 'groups.memberAdd', 'uses' => 'GroupController@memberAdd']);
 
 Route::group(['middleware' => 'auth'], function() {
     Route::post('/groups/{groups}', 'GroupController@delete');

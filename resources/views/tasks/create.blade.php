@@ -1,36 +1,5 @@
 @extends('layouts.app')
 
-@section('left-sidebar')
-    <div class="col-md-3 panel panel-body sidebar">
-        <ul class="nav nav-pills nav-stacked left-sidebar">
-            <li class="header text">
-                <h3>This week</h3>
-            </li>
-            <li>
-                <a href="#">Monday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Tuesday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Wednesday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Thirsday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Friday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Saturday<span class="badge right-circle">3</span></a>
-            </li>
-            <li>
-                <a href="#">Sunday<span class="badge right-circle">3</span></a>
-            </li>
-        </ul>
-    </div>
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -61,8 +30,23 @@
                                 <div>{{ $errors->first('time') }}</div>
                             </div>
                             <div class="form-group">
+                                <label>For</label>
+                                <select class="form-control" name="for" onchange="fillName(this.value, '{{$user->name}}')">
+                                    <option>For</option>
+                                    <option value="1">Myself</option>
+                                    <option value="2">Someone</option>
+                                    <option value="3">Group</option>
+                                </select>
+                                <div>{{ $errors->first('for') }}</div>
+                            </div>
+                            <div class="form-group">
+                                <label id="name_label">Name</label>
+                                <input type="text" class="form-control" name="name" id="name">
+                                <div>{{ $errors->first('name') }}</div>
+                            </div>
+                            <div class="form-group">
                                 <button class="btn btn-success" name="submit">Add task</button>
-                                <a class="btn btn-danger pull-right" href="/home">Cancel</a>
+                                <a class="btn btn-danger pull-right" href="/tasks">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -70,4 +54,5 @@
             </div>
         </div>
     </div>
+
 @endsection

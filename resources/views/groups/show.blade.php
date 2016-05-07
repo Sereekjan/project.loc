@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="panel panel-body list-head">
-        <h3>TASKS LIST</h3>
+        <h3>{{$group->name}}</h3>
         @if(count($tasks) == 0)
             <div class="row text-center"><h4>Nothing to do</h4></div>
         @endif
@@ -17,8 +17,21 @@
             <a class="btn btn-success btn-lg" href=" {{ route('tasks.create') }} ">Add task</a>
             <button class="btn btn-danger btn-lg pull-right" name="submit" form="delete">Remove</button>
         </div>
+
+        <h3>MEMBERS LIST</h3>
+        @foreach($users as $user)
+            <pre class="list-row"><form method="post" action="{{route('groups.membersDelete', $group->id)}}"><h4><input type="checkbox" name="deleting[]" value="{{$user->id}}" form="delete">&nbsp;&nbsp;&nbsp;{{ $user->name.'('.$user->email.')' }}</h4>{{csrf_field()}}<button class="btn glyphicon glyphicon-trash pull-right btn-sm" name="submit"></button><input type="hidden" name="deleting" value="{{$user->id}}"></form></pre>
+        @endforeach
+        <div class="col-md-12">
+            {!! $users->links() !!}
+        </div>
+        <div class="nav nav-tabs span2 clearfix"></div>
+        <div class="panel-body">
+            <a class="btn btn-success btn-lg" href=" {{ route('groups.memberAddForm', $group->id) }} ">Add member</a>
+            <button class="btn btn-danger btn-lg pull-right" name="submit" form="delete">Remove</button>
+        </div>
+        <form action="/{{$group->id}}/delete" method="post" id="delete">
+            {{csrf_field()}}
+        </form>
     </div>
-    <form action="/tasks/1" method="post" id="delete">
-        {{csrf_field()}}
-    </form>
 @endsection
