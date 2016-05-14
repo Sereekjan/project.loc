@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\Priority;
 use App\Models\Task;
+use App\Models\Comment;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -90,7 +91,8 @@ class TaskController extends Controller
     {
         return view('tasks.show')
             ->with('priorities', Priority::getPriorities())
-            ->with('task', Task::getTaskById($id));
+            ->with('task', Task::getTaskById($id))
+            ->with('comments', Task::find($id)->comments);
     }
 
     /**
@@ -170,6 +172,70 @@ class TaskController extends Controller
                 $task = Task::find($request['deleting']);
                 $task->delete();
             }
+        }
+
+        return redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function commentAdd($task_id, Request $request) {
+        $validator = Validator::make($request->all(), [
+            'text' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect($_SERVER['HTTP_REFERER'])
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        if (isset($request['submit'])) {
+            $comment = new Comment([
+                'text' => $request->input('text'),
+                'task_id' => $task_id
+            ]);
+            $user = Auth::user();
+            $comment = $user->comments()->save($comment);
+        }
+
+        return redirect(route('tasks.show', $task_id));
+    }
+    
+    public function commentEdit($comment_id) {
+        return view('comments.edit')
+            ->with('comment', Comment::find($comment_id));
+    }
+    
+    public function commentUpdate($comment_id, Request $request) {
+        $validator = Validator::make($request->all(), [
+            'text' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect($_SERVER['HTTP_REFERER'])
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        $comment = Comment::find($comment_id);
+        $comment->text = $request->input('text');
+        $comment->save();
+        
+        return redirect(route('tasks.show', $comment->task->id));
+    }
+    
+    public function commentDelete(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'deleting' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect($_SERVER['HTTP_REFERER'])
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        if (isset($request['submit'])) {
+            Comment::find($request->input('deleting'))->delete();
         }
 
         return redirect($_SERVER['HTTP_REFERER']);

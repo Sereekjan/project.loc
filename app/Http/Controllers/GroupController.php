@@ -187,10 +187,15 @@ class GroupController extends Controller
     }
 
     public function memberAdd($group_id, Request $request) {
+        $arr = [];
+        for($i = 0; $i < count(User::getEmails()); $i++) {
+            $arr[] = User::getEmails()[$i]->email;
+        }
+        $arr = implode(',', $arr);
         $validator = Validator::make($request->all(), [
-            'email' => 'required'
+            'email' => 'required|not_in:'.$arr
         ]);
-
+        dd($validator->fails());
         if ($validator->fails()) {
             return redirect($_SERVER['HTTP_REFERER'])
                 ->withErrors($validator)

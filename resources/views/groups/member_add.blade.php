@@ -1,50 +1,5 @@
 @extends('layouts.app')
 
-@section('left-sidebar')
-    <div class="col-md-3 panel panel-body sidebar">
-        <ul class="nav nav-pills nav-stacked left-sidebar">
-            <li class="header text">
-                <h3>This week</h3>
-            </li>
-            <li>
-                <a href="#">Monday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getMonday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Tuesday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getTuesday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Wednesday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getWednesday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Thirsday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getThirsday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Friday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getFriday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Saturday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getSaturday())}}
-                </span></a>
-            </li>
-            <li>
-                <a href="#">Sunday<span class="badge right-circle">
-                        {{\App\Http\Helper::getTasksCountByDay(\App\Http\Helper::getSunday())}}
-                </span></a>
-            </li>
-        </ul>
-    </div>
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -56,7 +11,7 @@
                             {{csrf_field()}}
                             <div class="form-group">
                                 <label>User's email</label>
-                                <input type="text" class="form-control" name="email" class="form-control" value="{{old('email')}}">
+                                <input type="email" class="form-control" name="email" class="form-control" value="{{old('email')}}">
                                 <div>{{ $errors->first('email')}}</div>
                             </div>
                             <div class="form-group">

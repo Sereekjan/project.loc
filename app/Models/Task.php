@@ -50,6 +50,9 @@ class Task extends Model
         return $this->creator()->first();
     }*/
 
+    public function comments() {
+        return $this->hasMany('App\Models\Comment', 'task_id');
+    }
     public function group()
     {
         return $this->belongsToMany('App\Models\Group', 'tasks_groups_relations');

@@ -36,6 +36,38 @@
                     </div>
                 </div>
             </div>
+            @foreach($comments as $comment)
+            <form method="get" action="{{route('tasks.commentDelete', $comment->id)}}">
+                {{csrf_field()}}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="visible-lg-inline">{{\App\User::find($comment->user_id)->name}}</h4>
+                        <div class="btn-group pull-right" style="top:-5px;">
+                            <input type="hidden" name="deleting" value="{{$comment->id}}">
+                            <a class="btn glyphicon glyphicon-edit btn-default btn-sm" href="{{ route('tasks.commentEdit', $comment->id) }}"></a>
+                            <button class="btn glyphicon glyphicon-trash btn-sm btn-default" name="submit"></button>
+                        </div>
+                    </div>
+                    <div class="panel-body">{{$comment->text}}
+                    </div>
+                </div>
+            </form>
+            @endforeach
+            <form action="{{route('tasks.commentAdd', $task->id)}}" method="post">
+                {{csrf_field()}}
+                <div class="panel panel-default">
+                    <div class="panel-heading">New comment</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>Text</label>
+                            <textarea name="text" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" name="submit">Add comment</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
