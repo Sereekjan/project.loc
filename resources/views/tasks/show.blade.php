@@ -41,7 +41,7 @@
                 {{csrf_field()}}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="visible-lg-inline">{{\App\User::find($comment->user_id)->name}}</h4>
+                        <h4 class="visible-md-inline">{{Auth::user()->name}}</h4>
                         <div class="btn-group pull-right" style="top:-5px;">
                             <input type="hidden" name="deleting" value="{{$comment->id}}">
                             <a class="btn glyphicon glyphicon-edit btn-default btn-sm" href="{{ route('tasks.commentEdit', $comment->id) }}"></a>

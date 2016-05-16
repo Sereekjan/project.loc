@@ -12,13 +12,13 @@ class TaskPrioritiesSeeder extends Seeder
     public function run()
     {
         DB::table('tasks_priorities')->insert([
-            'name' => 'high'
+            'name' => 'High'
         ]);
         DB::table('tasks_priorities')->insert([
-            'name' => 'medium'
+            'name' => 'Medium'
         ]);
         DB::table('tasks_priorities')->insert([
-            'name' => 'low'
+            'name' => 'Low'
         ]);
     }
 }

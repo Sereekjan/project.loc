@@ -61,30 +61,30 @@ class Helper
     }
 
     public static function getMonday() {
-        return strtotime("last Monday");
+        return strtotime('last monday', strtotime('tomorrow'));
     }
 
     public static function getTuesday() {
-        return strtotime("last Monday +1 day");
+        return strtotime("last Monday +1 day", strtotime('tomorrow'));
     }
 
     public static function getWednesday() {
-        return strtotime("last Monday +2 day");
+        return strtotime("last Monday +2 day", strtotime('tomorrow'));
     }
 
     public static function getThirsday() {
-        return strtotime("last Monday +3 day");
+        return strtotime("last Monday +3 day", strtotime('tomorrow'));
     }
 
     public static function getFriday() {
-        return strtotime("last Monday +4 day");
+        return strtotime("last Monday +4 day", strtotime('tomorrow'));
     }
 
     public static function getSaturday() {
-        return strtotime("last Monday +5 day");
+        return strtotime("last Monday +5 day", strtotime('tomorrow'));
     }
 
     public static function getSunday() {
-        return strtotime("last Monday +6 day");
+        return strtotime("last Monday +6 day", strtotime('tomorrow'));
     }
 }

@@ -11,7 +11,7 @@ class Task extends Model
         'title', 'text', 'time', 'priority_id'
     ];
 
-    public static function getTasksByUserId($user_id) { // ТУТA
+    public static function getTasksByUserId($user_id) {
         $tasks = DB::table('users')
             ->join('tasks_users_relations', 'users.id', '=', 'tasks_users_relations.user_id')
             ->where('users.id', '=', $user_id)
