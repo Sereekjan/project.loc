@@ -51,6 +51,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/calendar') }}">CALENDAR</a></li>
                         <li><a href="{{ url('/tasks') }}">MY TASKS</a></li>
+                        <li><a href="{{ url('/tasksfor/') }}">TASKS FOR SOMEONE</a></li>
                         <li><a href="{{ url('/groups') }}">MY GROUPS</a></li>
                     </ul>
                 @endif

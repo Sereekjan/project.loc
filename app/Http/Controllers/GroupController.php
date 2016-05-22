@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
@@ -42,8 +43,16 @@ class GroupController extends Controller
      */
     public function store(Request $request, Group $group)
     {
+        $namesArr = [];
+        for ($i = 0; $i < count(Group::all()); $i++) {
+            $namesArr[] = Group::all('name')[$i]->name;
+        }
+        $namesArr = implode(',', $namesArr);
+        if ($namesArr != null) {
+            $namesArr = '|not_in:' . $namesArr;
+        }
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:20'
+            'name' => 'required|max:20|min:3'.$namesArr
         ]);
 
         if ($validator->fails()) {
@@ -72,10 +81,15 @@ class GroupController extends Controller
      */
     public function show($id)
     {
-        return view('groups.show')
-            ->with('group', Group::find($id))
-            ->with('tasks', Group::find($id)->getTasks())
-            ->with('users', Group::find($id)->getUsers());
+        if (Group::find($id) == 1) {
+            if (Group::find($id)->isMember(Auth::user()->id))
+                return view('groups.show')
+                    ->with('group', Group::find($id)->getGroup())
+                    ->with('tasks', Group::find($id)->getTasks())
+                    ->with('users', Group::find($id)->getUsers());
+        }
+
+        return redirect(route('groups.index'));
     }
 
     /**
@@ -86,8 +100,14 @@ class GroupController extends Controller
      */
     public function edit($id)
     {
-        return view('groups.edit')
-            ->with('group', Group::find($id));
+        if (Group::find($id) == 1) {
+            if (Group::find($id)->isMember(Auth::user()->id))
+                if (Group::find($id)->isModer(Auth::user()->id))
+                    return view('groups.edit')
+                        ->with('group', Group::find($id));
+        }
+
+        return redirect(route('groups.index'));
     }
 
     /**
@@ -124,8 +144,6 @@ class GroupController extends Controller
      */
     public function destroy($id)
     {
-        dd('YEAH');
-        //self::find($id)->delete();
     }
 
     public function delete($id, Request $request) {
@@ -139,15 +157,11 @@ class GroupController extends Controller
                 ->withInput();
         }
 
-        if (isset($request['submit'])) {
+        if (isset($request['deleting'])) {
             if (is_array($request['deleting'])) {
-                foreach ($request['deleting'] as $_id) {
-                    $group = Group::find($_id);
-                    $group->delete();
-                }
+                Group::deleteGroups($request['deleting']);
             } else {
-                $group = Group::find($request['deleting']);
-                $group->delete();
+                Group::deleteGroups([$request['deleting']]);
             }
         }
 
@@ -169,7 +183,6 @@ class GroupController extends Controller
             if (is_array($request['deleting'])) {
                 foreach ($request['deleting'] as $_id) {
                     $group = Group::find($group_id);
-                    dd($group->members->where('user_id', '=', $$_id));
                     $group->members()->detach($_id);
                 }
             } else {
@@ -188,14 +201,14 @@ class GroupController extends Controller
 
     public function memberAdd($group_id, Request $request) {
         $arr = [];
-        for($i = 0; $i < count(User::getEmails()); $i++) {
-            $arr[] = User::getEmails()[$i]->email;
+        $group = Group::find($group_id);
+        for($i = 0; $i < count($group->getEmails()); $i++) {
+            $arr[] = $group->getEmails()[$i];
         }
         $arr = implode(',', $arr);
         $validator = Validator::make($request->all(), [
             'email' => 'required|not_in:'.$arr
         ]);
-        dd($validator->fails());
         if ($validator->fails()) {
             return redirect($_SERVER['HTTP_REFERER'])
                 ->withErrors($validator)
@@ -216,9 +229,21 @@ class GroupController extends Controller
             } else {
                 $group = Group::find($group_id);
                 $user = $group->members()->save($user);
+                DB::table('group_members')
+                    ->where('user_id', '=', $user->id)
+                    ->where('group_id', '=', $group->id)
+                    ->update(array('privilege_id' => 2));
             }
         }
 
         return redirect(route('groups.show', $group_id));
+    }
+    
+    public function leave(Request $request, $id) {
+        Group::find($id)
+            ->members()
+            ->detach(Auth::user()->id);
+
+        return redirect(route('groups.index'));
     }
 }

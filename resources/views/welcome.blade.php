@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('welcome')
-    <div class="panel panel-body">
-        <h3>Welcome</h3>
+@section('content')
+    <div class="text-center">
+        <h3>WELCOME TO REMINDER</h3>
     </div>
 @endsection

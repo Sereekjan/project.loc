@@ -7,7 +7,7 @@
             <div class="row text-center"><h4>Nothing to do</h4></div>
         @endif
         @foreach($tasks as $task)
-            <pre class="list-row"><form method="post" action="/tasks/1"><h4><input type="checkbox" name="deleting[]" value="{{$task->id}}" form="delete">&nbsp;&nbsp;&nbsp;<a href="/tasks/{{$task->id}}">{{ $task->title }}</a></h4>{{csrf_field()}}<button class="btn glyphicon glyphicon-trash pull-right btn-sm" name="submit"></button><input type="hidden" name="deleting" value="{{$task->id}}"><a class="btn glyphicon glyphicon-edit pull-right btn-sm" href="{{ route('tasks.edit', $task->id) }}"></a></form></pre>
+            <pre class="list-row"><form method="post" action="/tasks/1"><h4><input type="checkbox" name="deleting[]" @if(($task->user_id != $task->creator_id) && $task->creator_id != \Illuminate\Support\Facades\Auth::user()->id) disabled @endif value="{{$task->task_id}}" form="delete">&nbsp;&nbsp;&nbsp;<a href="/tasks/{{$task->task_id}}">{{ $task->title }}</a></h4>{{csrf_field()}}@if($task->user_id == $task->creator_id || $task->creator_id == \Illuminate\Support\Facades\Auth::user()->id)<button class="btn glyphicon glyphicon-trash pull-right btn-sm" name="submit"></button><input type="hidden" name="deleting" value="{{$task->task_id}}"><a class="btn glyphicon glyphicon-edit pull-right btn-sm" href="{{ route('tasks.edit', $task->task_id) }}"></a>@endif</form></pre>
         @endforeach
         <div class="col-md-12">
             {!! $tasks->links() !!}

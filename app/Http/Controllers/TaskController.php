@@ -46,17 +46,30 @@ class TaskController extends Controller
      */
     public function store(Request $request, Task $task)
     {
-        //dd($request->input());
+        $emails = implode(',', Group::getEmailsByUser());
+        $groups = implode(',', Group::getGroupsNameArray());
+        $emailError = null;
+        $groupError = null;
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:20',
             'text' => 'required|max:500',
             'status' => 'required',
             'time' => 'required',
             'for' => 'required|digits_between:1,3',
-            'name' => 'required|'.(($request->input('for') == '2') ? 'exists:users,email' :
-                    (($request->input('for') == '3') ? 'exists:groups,name' : ''))
+            'name' => 'required|'.(($request->input('for') == '2') ? 'in:'.$emails :
+                    (($request->input('for') == '3') ? 'in:'.$groups : ''))
         ]);
-
+        $messages = array();
+        if ($emailError != null) {
+            $messages[] = [
+                'name' => 'No members with email in your groups'
+            ];
+        }
+        if ($groupError != null) {
+            $messages[] = [
+                'name' => 'You have not groups with name'
+            ];
+        }
         if ($validator->fails()) {
             return redirect(route('tasks.create'))
                 ->withErrors($validator)
@@ -89,10 +102,21 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return view('tasks.show')
-            ->with('priorities', Priority::getPriorities())
-            ->with('task', Task::getTaskById($id))
-            ->with('comments', Task::find($id)->comments);
+        if (count(Task::find($id)->user) == 1) {
+            if (Task::find($id)->creator()->id == Auth::user()->id || Task::find($id)->user()->first()->id == Auth::user()->id ) {
+                return view('tasks.show')
+                    ->with('priorities', Priority::getPriorities())
+                    ->with('task', Task::getTaskById($id))
+                    ->with('comments', Task::getComments($id));
+            }
+        } elseif (count(Task::find($id)->group) == 1) {
+            if (Task::find($id)->group()->first()->isMember(Auth::user()->id))
+                return view('tasks.show')
+                    ->with('priorities', Priority::getPriorities())
+                    ->with('task', Task::getTaskById($id))
+                    ->with('comments', Task::getComments($id));
+        }
+        return redirect(route('tasks.index'));
     }
 
     /**
@@ -103,9 +127,19 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        return view('tasks.edit')
-            ->with('priorities', Priority::getPriorities())
-            ->with('task', Task::find($id));
+        if (count(Task::find($id)->user) == 1) {
+            if (Task::find($id)->creator()->id == Auth::user()->id) {
+                return view('tasks.edit')
+                    ->with('priorities', Priority::getPriorities())
+                    ->with('task', Task::find($id));
+            }
+        } elseif (count(Task::find($id)->group) == 1) {
+            if (Task::find($id)->group()->first()->isModer(Auth::user()->id))
+                return view('tasks.edit')
+                    ->with('priorities', Priority::getPriorities())
+                    ->with('task', Task::find($id));
+        }
+        return redirect(route('tasks.index'));
     }
 
     /**
@@ -166,10 +200,14 @@ class TaskController extends Controller
             if (is_array($request['deleting'])) {
                 foreach ($request['deleting'] as $_id) {
                     $task = Task::find($_id);
+                    $task->comments()->delete();
+                    $task->user()->detach();
                     $task->delete();
                 }
             } else {
                 $task = Task::find($request['deleting']);
+                $task->comments()->delete();
+                $task->user()->detach();
                 $task->delete();
             }
         }
@@ -178,6 +216,21 @@ class TaskController extends Controller
     }
 
     public function commentAdd($task_id, Request $request) {
+        if (Task::find($task_id) == null)
+            return redirect(route('tasks.show', $task_id));
+
+        if (count(Task::find($task_id)->user) == 1) {
+            if (Task::find($task_id)->creator()->id != Auth::user()->id && Task::find($task_id)->user()->first()->id != Auth::user()->id ) {
+                return redirect(route('tasks.show', $task_id));
+            }
+        } elseif (count(Task::find($task_id)->group) == 1) {
+            if (!Task::find($task_id)->group()->first()->isMember(Auth::user()->id)) {
+                return redirect(route('tasks.show', $task_id));
+            }
+        } else {
+            return redirect(route('tasks.show', $task_id));
+        }
+
         $validator = Validator::make($request->all(), [
             'text' => 'required'
         ]);
@@ -201,8 +254,11 @@ class TaskController extends Controller
     }
     
     public function commentEdit($comment_id) {
-        return view('comments.edit')
-            ->with('comment', Comment::find($comment_id));
+        if (Comment::find($comment_id)->user_id == Auth::user()->id)
+            return view('comments.edit')
+                ->with('comment', Comment::find($comment_id));
+        else
+            return redirect(route('tasks.show', Comment::find($comment_id)->task_id));
     }
     
     public function commentUpdate($comment_id, Request $request) {
@@ -223,7 +279,10 @@ class TaskController extends Controller
         return redirect(route('tasks.show', $comment->task->id));
     }
     
-    public function commentDelete(Request $request) {
+    public function commentDelete($id, Request $request) {
+        if (Comment::find($id)->user_id != Auth::user()->id)
+            return redirect(route('tasks.show', Comment::find($id)->task_id));
+
         $validator = Validator::make($request->all(), [
             'deleting' => 'required'
         ]);
@@ -239,5 +298,10 @@ class TaskController extends Controller
         }
 
         return redirect($_SERVER['HTTP_REFERER']);
+    }
+    
+    public function tasksForSomeOne() {
+        return view('tasks.index')
+            ->with('tasks', Task::getTasksByCreatorId(Auth::user()->id));
     }
 }

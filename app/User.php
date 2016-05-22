@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -44,16 +45,27 @@ class User extends Authenticatable
     }
     
     public function getGroups() {
-        return $this->groups()->paginate(10);
+        $groups = DB::table('groups')
+            ->join('group_members', 'groups.id', '=', 'group_members.group_id')
+            ->where('group_members.user_id', '=', $this->id)
+            ->pluck('group_id');
+
+        return DB::table('groups')
+            ->join('group_members', 'groups.id', '=', 'group_members.group_id')
+            ->whereIn('group_members.group_id', $groups)
+            ->where('group_members.user_id', '=', $this->id)
+            ->paginate(10);
     }
 
     public static function getUserByEmail($email) {
         return self::where('email', '=', $email)->first();
     }
-    
+
     public static function getEmailsByIds($ids) {
         $returnArr = [];
-        //for ($i = 0; $i < count(self::))
-        return self::where()->select('email')->get();
+        for ($i = 0; $i < count($ids); $i++) {
+            $returnArr[] = User::find($ids[$i]->user_id)->email;
+        }
+        return $returnArr;
     }
 }

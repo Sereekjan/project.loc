@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helper;
+use App\Models\Group;
 use App\Models\Invite;
 use App\Models\Task;
 use App\User;
@@ -28,7 +29,7 @@ class MainController extends Controller
 
     public function invitedToken($token) {
         $invite = Invite::getInviteByToken($token);
-        if (count($invite) == 0) {
+        if (count($invite) == 0 || $invite->is_activated == 1) {
             App::abort(404);
         }
 
@@ -44,6 +45,9 @@ class MainController extends Controller
         $invite->is_activated = 1;
         $user->save();
         $invite->save();
+
+        $group = Group::find($invite->group_id);
+        $user = $group->members()->save($user);
 
         return redirect(route('tasks.index'));
     }

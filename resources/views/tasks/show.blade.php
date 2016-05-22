@@ -26,11 +26,13 @@
                         <div class="form-group">
                             <label>For</label>
                             <input type="text" name="for" class="form-control" disabled value="{{
-                            (count($task->getUser()) != 0) ? $task->getUser()->email : $task->getGroup()->name
+                            (count(\App\Models\Task::find($task->task_id)->getUser()) != 0) ? \App\Models\Task::find($task->task_id)->getUser()->email : \App\Models\Task::find($task->task_id)->getGroup()->name
                             }}">
                         </div>
                         <div class="form-group">
-                            <a class="btn btn-success" href=" {{ route('tasks.edit', $task->id) }} " name="submit">Edit task</a>
+                               @if(\Illuminate\Support\Facades\Auth::user()->id == $task->creator_id)
+                                    <a class="btn btn-success" href=" {{ route('tasks.edit', $task->task_id) }} " name="submit">Edit task</a>
+                               @endif
                             <a class="btn btn-danger pull-right" href="/tasks">Cancel</a>
                         </div>
                     </div>
@@ -41,19 +43,21 @@
                 {{csrf_field()}}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="visible-md-inline">{{Auth::user()->name}}</h4>
-                        <div class="btn-group pull-right" style="top:-5px;">
-                            <input type="hidden" name="deleting" value="{{$comment->id}}">
-                            <a class="btn glyphicon glyphicon-edit btn-default btn-sm" href="{{ route('tasks.commentEdit', $comment->id) }}"></a>
-                            <button class="btn glyphicon glyphicon-trash btn-sm btn-default" name="submit"></button>
-                        </div>
+                        <span class="h4">{{\App\User::find($comment->user_id)->name}}</span>
+                        @if($comment->user_id == \Illuminate\Support\Facades\Auth::user()->id)
+                            <div class="btn-group pull-right" style="top:-5px;">
+                                <input type="hidden" name="deleting" value="{{$comment->id}}">
+                                <a class="btn glyphicon glyphicon-edit btn-default btn-sm" href="{{ route('tasks.commentEdit', $comment->id) }}"></a>
+                                <button class="btn glyphicon glyphicon-trash btn-sm btn-default" name="submit"></button>
+                            </div>
+                        @endif
                     </div>
                     <div class="panel-body">{{$comment->text}}
                     </div>
                 </div>
             </form>
             @endforeach
-            <form action="{{route('tasks.commentAdd', $task->id)}}" method="post">
+            <form action="{{route('tasks.commentAdd', $task->task_id)}}" method="post">
                 {{csrf_field()}}
                 <div class="panel panel-default">
                     <div class="panel-heading">New comment</div>

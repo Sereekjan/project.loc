@@ -24,10 +24,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/tasks/{tasks}', 'TaskController@delete');
     Route::resource('tasks', 'TaskController');
     Route::resource('groups', 'GroupController');
+    Route::get('/tasksfor/', 'TaskController@tasksForSomeOne');
 
     Route::post('/groups/{members}/delete', [ 'as' => 'groups.membersDelete', 'uses' => 'GroupController@deleteMembers']);
     Route::get('/groups/{group}/addForm', [ 'as' => 'groups.memberAddForm', 'uses' => 'GroupController@memberAddForm']);
     Route::post('/groups/{group}/add', [ 'as' => 'groups.memberAdd', 'uses' => 'GroupController@memberAdd']);
+    Route::get('/groups/{group}/leave', [ 'as' => 'groups.leave', 'uses' => 'GroupController@leave']);
 
     Route::post('/tasks/{tasks}/add', [ 'as' => 'tasks.commentAdd', 'uses' => 'TaskController@commentAdd']);
     Route::get('/comment/{comment}/edit', [ 'as' => 'tasks.commentEdit', 'uses' => 'TaskController@commentEdit']);
